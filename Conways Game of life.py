@@ -11,7 +11,7 @@ def generate_board(rows, cols, alive_prob): #initialize board of defined size
     for _ in range(rows):
         row = []
         for _ in range(cols):
-            cell = 'O' if random.random() < alive_prob else 'X'
+            cell = 'O' if random.random() < alive_prob else '_'
             row.append(cell)
         board.append(row)
     return board
@@ -54,9 +54,9 @@ def IsAlive(board):
         for y in range(cols):
             count = count_neighbors(board, x, y)
             if board[x][y] == 'O':
-                new_board[x][y] = 'O' if 2 <= count <= 3 else 'X'
+                new_board[x][y] = 'O' if 2 <= count <= 3 else '_'
             else:
-                new_board[x][y] = 'O' if count == 3 else 'X'
+                new_board[x][y] = 'O' if count == 3 else '_'
     return new_board
 
 # --- Main Loop ---
