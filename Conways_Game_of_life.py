@@ -3,7 +3,7 @@ import time
 import os
 
 GREEN = '\033[32m' # ascii for Dark Green colour
-RESET = '\033[90m' # ascii for Gray / Dead Colour
+RESET = '\033[90m' # ascii for Gray / Dead cell Colour
 
 
 def generate_board(rows, cols, alive_prob): #initialize board of defined size 
