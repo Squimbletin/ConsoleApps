@@ -5,3 +5,5 @@ Current apps:
   1. Console Wordle
 
   2. Conways Game of life simulation
+
+  3. Console sand simulator
