@@ -1,6 +1,14 @@
 import curses
 import time
 
+# Console Sand Simulation
+# This program simulates falling sand in a terminal window using the curses library.
+# It allows users to summon sand grains by clicking the left mouse button.
+# The sand grains will fall down, and if blocked, they will fall diagonally to the left or right.
+# The simulation runs continuously until the user presses 'q' to quit.
+# 0 = empty space
+# 1 = sand grain
+
 def simulation(screen): #simulates the falling sand
     height = len(screen) # Get the height of the screen
     width = len(screen[0]) if height > 0 else 0 # Get the width of the screen
@@ -70,6 +78,8 @@ def main(stdscr): # Main function to Summon sand
 
         if key == ord('q'): # Quit the program if 'q' is pressed
             break
+        if key == ord('r'): # Reset the screen if 'r' is pressed
+            screen = [[None for _ in range(width)] for _ in range(height)]
         elif key == curses.KEY_MOUSE: #SUMMON SAND WHEN MOUSE PRESSED
             try:
                 _, x, y, _, bstate = curses.getmouse() #Get mouse position and button state
@@ -85,28 +95,28 @@ def main(stdscr): # Main function to Summon sand
             except curses.error: # Handle any curses errors stopping stupid crashes
                 pass
 
-        if mouse_down:
-            for dy in range(-1, 2):
-                for dx in range(-1, 2):
-                    if dx * dx + dy * dy <= 1:
-                        ny, nx = mouse_y + dy, mouse_x + dx
-                        if 0 <= ny < height and 0 <= nx < width:
-                            screen[ny][nx] = 1
+        if mouse_down: # If the mouse is down, summon sand
+            for dy in range(-1, 2): # Loop through a 3x3 area around the mouse position
+                for dx in range(-1, 2): 
+                    if dx * dx + dy * dy <= 1: # Check if within a 1 unit radius
+                        ny, nx = mouse_y + dy, mouse_x + dx # Check the new position
+                        if 0 <= ny < height and 0 <= nx < width: # Ensure within bounds
+                            screen[ny][nx] = 1 # NEW SAND GRAIN
 
-        simulation(screen)
+        simulation(screen) #run the simulation
 
-        stdscr.clear()
-        for y in range(height):
-            for x in range(width):
-                if screen[y][x] == 1:
-                    color_pair = curses.color_pair(((x + y) % len(colors)) + 1)
+        stdscr.clear() # Clear the screen before drawing
+
+        for y in range(height): # DRAW IN THE SAND 
+            for x in range(width): 
+                if screen[y][x] == 1: # If there's a sand grain at (x, y)
+                    color_pair = curses.color_pair(((x + y) % len(colors)) + 1)  # Cycle through colors based on position
                     try:
-                        stdscr.attron(color_pair)
-                        stdscr.addstr(y, x, "o")
-                        stdscr.attroff(color_pair)
-                    except curses.error:
+                        stdscr.attron(color_pair) # Set the color for the sand grain
+                        stdscr.addstr(y, x, "o") # Draw the sand grain (o)
+                        stdscr.attroff(color_pair) # Turn off the color attribute
+                    except curses.error: # Handle any curses errors to prevent crashes
                         pass
-        stdscr.refresh()
-        time.sleep(0.01)
-
-curses.wrapper(main)
+        stdscr.refresh() # Refresh the screen to show changes
+        time.sleep(0.01) # Sleep to control the speed of the simulation
+curses.wrapper(main) # Start the curses application
